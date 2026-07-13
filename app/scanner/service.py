@@ -1,6 +1,7 @@
 import json
 
 from app.analysis.analyzer import Analyzer
+from app.analysis.filter import AnalysisFilter
 from app.ui.console import ConsoleUI
 from app.ui.dashboard import Dashboard
 
@@ -32,13 +33,23 @@ class ScannerService:
 
         Dashboard.show(analyses)
 
+        opportunities = AnalysisFilter.opportunities(
+            analyses
+        )
+
         print("\n" + "=" * 60)
         print(" TOP OPORTUNIDADES ")
         print("=" * 60)
 
+        if not opportunities:
+
+            print("\nNo hay oportunidades disponibles.\n")
+
+            return
+
         medals = ["🥇", "🥈", "🥉"]
 
-        for index, analysis in enumerate(analyses):
+        for index, analysis in enumerate(opportunities):
 
             medal = medals[index] if index < 3 else "⭐"
 
@@ -53,7 +64,7 @@ class ScannerService:
         print(" DETALLE ")
         print("=" * 60)
 
-        for analysis in analyses[:3]:
+        for analysis in opportunities[:3]:
             ConsoleUI.show_analysis(analysis)
 
     def run(self):
