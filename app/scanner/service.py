@@ -2,6 +2,7 @@ import json
 
 from app.analysis.analyzer import Analyzer
 from app.analysis.filter import AnalysisFilter
+from app.scanner.engine import ScannerEngine
 from app.ui.console import ConsoleUI
 from app.ui.dashboard import Dashboard
 
@@ -9,18 +10,30 @@ from app.ui.dashboard import Dashboard
 class ScannerService:
 
     def __init__(self):
+
+        self.engine = ScannerEngine()
         self.analyzer = Analyzer()
 
     def load_watchlist(self):
 
-        with open("data/watchlist.json", "r", encoding="utf-8") as file:
+        with open(
+            "data/watchlist.json",
+            "r",
+            encoding="utf-8"
+        ) as file:
+
             return json.load(file)
 
     def analyze(self):
 
         watchlist = self.load_watchlist()
 
-        analyses = self.analyzer.analyze_watchlist(watchlist)
+        # NUEVO
+        self.engine.scan(watchlist)
+
+        analyses = self.analyzer.analyze_watchlist(
+            watchlist
+        )
 
         analyses.sort(
             key=lambda analysis: analysis["score"],
@@ -43,7 +56,7 @@ class ScannerService:
 
         if not opportunities:
 
-            print("\nNo hay oportunidades disponibles.\n")
+            print("\nNo hay oportunidades.\n")
 
             return
 
