@@ -8,6 +8,7 @@ class Scorer:
 
         score = 0
         reasons = []
+        debug = {}
 
         difference = analysis["difference_percent"]
         volume = analysis["volume"]
@@ -15,63 +16,99 @@ class Scorer:
         volatility = analysis["volatility"]
         trend = analysis["trend"]
 
+        # -----------------------
         # Precio
+        # -----------------------
+
+        points = 0
+
         if difference <= -5:
-            score += Config.PRICE_VERY_CHEAP
+            points = Config.PRICE_VERY_CHEAP
             reasons.append("Precio muy por debajo del promedio")
 
         elif difference <= -2:
-            score += Config.PRICE_CHEAP
+            points = Config.PRICE_CHEAP
             reasons.append("Precio por debajo del promedio")
 
         elif difference <= 0:
-            score += Config.PRICE_SLIGHTLY_CHEAP
+            points = Config.PRICE_SLIGHTLY_CHEAP
             reasons.append("Precio ligeramente por debajo del promedio")
 
+        score += points
+        debug["Precio"] = points
+
+        # -----------------------
         # Volumen
+        # -----------------------
+
+        points = 0
+
         if volume >= 100:
-            score += Config.HIGH_VOLUME
+            points = Config.HIGH_VOLUME
             reasons.append("Volumen alto")
 
         elif volume >= 50:
-            score += Config.MEDIUM_VOLUME
+            points = Config.MEDIUM_VOLUME
             reasons.append("Buen volumen")
 
         else:
-            score += Config.LOW_VOLUME
+            points = Config.LOW_VOLUME
             reasons.append("Volumen bajo")
 
+        score += points
+        debug["Volumen"] = points
+
+        # -----------------------
         # Historial
+        # -----------------------
+
+        points = 0
+
         if history_count >= 100:
-            score += Config.LARGE_HISTORY
+            points = Config.LARGE_HISTORY
             reasons.append("Historial amplio")
 
         elif history_count >= 30:
-            score += Config.MEDIUM_HISTORY
+            points = Config.MEDIUM_HISTORY
             reasons.append("Historial suficiente")
 
         else:
-            score += Config.SMALL_HISTORY
+            points = Config.SMALL_HISTORY
             reasons.append("Historial corto")
 
+        score += points
+        debug["Historial"] = points
+
+        # -----------------------
         # Volatilidad
+        # -----------------------
+
+        points = 0
+
         if volatility <= 1:
-            score += Config.LOW_VOLATILITY
+            points = Config.LOW_VOLATILITY
             reasons.append("Baja volatilidad")
 
         elif volatility <= 3:
-            score += Config.MEDIUM_VOLATILITY
+            points = Config.MEDIUM_VOLATILITY
             reasons.append("Volatilidad moderada")
 
-        # Tendencia
+        score += points
+        debug["Volatilidad"] = points
+
         if trend == "DOWN":
             reasons.append("Tendencia bajista")
+
         elif trend == "UP":
             reasons.append("Tendencia alcista")
+
         else:
             reasons.append("Tendencia estable")
 
+        debug["TOTAL"] = score
+
         return {
             "score": score,
-            "reasons": reasons
+            "reasons": reasons,
+            "debug": debug
         }

@@ -1,6 +1,7 @@
+from app.analysis.moving_average import MovingAverage
+from app.analysis.recommendation import Recommendation
 from app.analysis.scorer import Scorer
 from app.analysis.statistics import Statistics
-from app.analysis.recommendation import Recommendation
 from app.database.repository import PriceRepository
 
 
@@ -18,39 +19,46 @@ class Analyzer:
     def get_price_history(self, skin):
         return self.repository.get_price_history(skin)
 
-    def get_average_price(self, skin):
+    def _get_prices(self, skin):
 
         history = self.get_price_history(skin)
 
-        prices = [float(price) for _, price in history]
+        return [float(price) for _, price in history]
 
-        return Statistics.average(prices)
+    def get_average_price(self, skin):
+
+        return Statistics.average(
+            self._get_prices(skin)
+        )
+
+    def get_moving_average(self, skin):
+
+        return MovingAverage.calculate(
+            self._get_prices(skin)
+        )
 
     def get_price_difference_percent(self, skin):
 
         current_price = self.get_last_price(skin)
-        average_price = self.get_average_price(skin)
+
+        moving_average = self.get_moving_average(skin)
 
         return Statistics.difference_percent(
             current_price,
-            average_price
+            moving_average
         )
 
     def get_trend(self, skin):
 
-        history = self.get_price_history(skin)
-
-        prices = [float(price) for _, price in history]
-
-        return Statistics.trend(prices)
+        return Statistics.trend(
+            self._get_prices(skin)
+        )
 
     def get_volatility(self, skin):
 
-        history = self.get_price_history(skin)
-
-        prices = [float(price) for _, price in history]
-
-        return Statistics.volatility(prices)
+        return Statistics.volatility(
+            self._get_prices(skin)
+        )
 
     def analyze_skin(self, skin):
 
@@ -58,6 +66,7 @@ class Analyzer:
             "skin": skin,
             "current_price": self.get_last_price(skin),
             "average_price": self.get_average_price(skin),
+            "moving_average": self.get_moving_average(skin),
             "difference_percent": self.get_price_difference_percent(skin),
             "volume": self.get_last_volume(skin),
             "history": self.get_price_history(skin),
@@ -69,6 +78,7 @@ class Analyzer:
 
         analysis["score"] = score_data["score"]
         analysis["reasons"] = score_data["reasons"]
+        analysis["debug"] = score_data["debug"]
         analysis["recommendation"] = Recommendation.get(
             analysis["score"]
         )
