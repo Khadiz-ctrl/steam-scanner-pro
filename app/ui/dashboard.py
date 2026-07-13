@@ -1,39 +1,58 @@
 class Dashboard:
 
+    WIDTH = 60
+
+    @staticmethod
+    def line():
+        print("═" * Dashboard.WIDTH)
+
+    @staticmethod
+    def title(text):
+
+        Dashboard.line()
+        print(text.center(Dashboard.WIDTH))
+        Dashboard.line()
+
     @staticmethod
     def show(analyses):
 
-        buy = 0
-        watch = 0
-        skip = 0
+        buy = sum(
+            1
+            for analysis in analyses
+            if analysis["recommendation"] == "BUY"
+        )
 
-        for analysis in analyses:
+        watch = sum(
+            1
+            for analysis in analyses
+            if analysis["recommendation"] == "WATCH"
+        )
 
-            recommendation = analysis["recommendation"]
-
-            if recommendation == "BUY":
-                buy += 1
-
-            elif recommendation == "WATCH":
-                watch += 1
-
-            else:
-                skip += 1
+        skip = sum(
+            1
+            for analysis in analyses
+            if analysis["recommendation"] == "SKIP"
+        )
 
         best = analyses[0]
 
-        print("=" * 60)
-        print(" STEAM SCANNER PRO ")
-        print("=" * 60)
+        Dashboard.title("STEAM SCANNER PRO")
 
-        print("\nRESUMEN DEL MERCADO\n")
+        print()
+
+        print("📊 RESUMEN")
+        print("-" * Dashboard.WIDTH)
 
         print(f"Skins analizadas : {len(analyses)}")
         print(f"BUY              : {buy}")
         print(f"WATCH            : {watch}")
         print(f"SKIP             : {skip}")
 
-        print("\nMejor oportunidad:")
+        print()
 
-        print(f"  {best['skin']}")
-        print(f"  Score: {best['score']}")
+        print("🏆 MEJOR OPORTUNIDAD")
+        print("-" * Dashboard.WIDTH)
+
+        print(best["skin"])
+        print(f"Score          : ⭐ {best['score']}")
+        print(f"Recomendación  : {best['recommendation']}")
