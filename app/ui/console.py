@@ -7,7 +7,7 @@ class ConsoleUI:
         print(" Steam Scanner Pro ")
         print("=" * 50)
 
-        print(f"\nSkin:")
+        print("\nSkin:")
         print(f"  {analysis['skin']}")
 
         print("\nPrecio actual:")
@@ -15,6 +15,9 @@ class ConsoleUI:
 
         print("\nPrecio promedio:")
         print(f"  ${analysis['average_price']}")
+
+        print("\nPrecio objetivo:")
+        print(f"  ${analysis['target_price']}")
 
         print("\nDiferencia:")
 
@@ -25,10 +28,34 @@ class ConsoleUI:
         print("\nVolumen:")
         print(f"  {analysis['volume']}")
 
+        print("\nTendencia:")
+
+        trend = analysis["trend"]
+
+        if trend == "UP":
+            emoji = "📈"
+        elif trend == "DOWN":
+            emoji = "📉"
+        else:
+            emoji = "➖"
+
+        print(f"  {emoji} {trend}")
+
+        print("\nVolatilidad:")
+        print(f"  {analysis['volatility']}")
+
         print("\nRegistros históricos:")
         print(f"  {len(analysis['history'])}")
 
         print("\nOpportunity Score:")
         print(f"  ⭐ {analysis['score']}/100")
+
+        print("\nPrioridad:")
+        print(f"  {analysis['priority']}")
+
+        print("\nRazones:")
+
+        for reason in analysis["reasons"]:
+         print(f"  ✔ {reason}")
 
         print("=" * 50)

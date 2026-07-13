@@ -1,5 +1,17 @@
 [
-    "AK-47 | Redline (Field-Tested)",
-    "AWP | Asiimov (Battle-Scarred)",
-    "USP-S | Printstream (Field-Tested)"
+    {
+        "skin": "AK-47 | Redline (Field-Tested)",
+        "target_price": 39.50,
+        "priority": 1
+    },
+    {
+        "skin": "AWP | Asiimov (Battle-Scarred)",
+        "target_price": 100.00,
+        "priority": 2
+    },
+    {
+        "skin": "USP-S | Printstream (Field-Tested)",
+        "target_price": 52.00,
+        "priority": 1
+    }
 ]
