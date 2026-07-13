@@ -12,13 +12,13 @@ class Database:
     def crear_tablas(self):
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS prices (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                skin TEXT NOT NULL,
-                price TEXT,
-                volume TEXT,
-                median_price TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    skin TEXT NOT NULL,
+    price REAL,
+    volume INTEGER,
+    median_price REAL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)
         """)
         self.conn.commit()
 
@@ -29,7 +29,7 @@ class Database:
             VALUES (?, ?, ?, ?)
         """, (
             skin,
-            datos.get("lowest_price"),
+            datos.get("price"),
             datos.get("volume"),
             datos.get("median_price")
         ))

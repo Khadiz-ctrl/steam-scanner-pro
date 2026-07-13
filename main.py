@@ -1,44 +1,47 @@
 import json
 
-from app.providers.steam import SteamProvider
-from app.database.database import Database
-
-
-def cargar_watchlist():
-    with open("data/watchlist.json", "r", encoding="utf-8") as archivo:
-        return json.load(archivo)
+from app.analysis.analyzer import Analyzer
+from app.ui.console import ConsoleUI
 
 
 def main():
 
-    watchlist = cargar_watchlist()
+    analyzer = Analyzer()
 
-    steam = SteamProvider()
+    with open("data/watchlist.json", "r", encoding="utf-8") as file:
+        skins = json.load(file)
 
-    db = Database()
-    db.crear_tablas()
+    analyses = analyzer.analyze_watchlist(skins)
 
-    print("=" * 50)
-    print(" Steam Scanner ")
-    print("=" * 50)
+    analyses.sort(
+        key=lambda analysis: analysis["score"],
+        reverse=True
+    )
 
-    for skin in watchlist:
+    print("=" * 60)
+    print(" STEAM SCANNER PRO ")
+    print("=" * 60)
 
-        print(f"\nBuscando: {skin}")
+    print("\nTOP OPORTUNIDADES\n")
 
-        datos = steam.obtener_precio(skin)
+    medals = ["🥇", "🥈", "🥉"]
 
-        if not datos.get("success"):
-            print("❌ Error:", datos.get("error"))
-            continue
+    for index, analysis in enumerate(analyses):
 
-        db.guardar_precio(skin, datos)
+        medal = medals[index] if index < 3 else "⭐"
 
-        print("💲 Precio:", datos.get("lowest_price"))
-        print("📊 Volumen:", datos.get("volume"))
-        print("📈 Mediana:", datos.get("median_price"))
+        print(
+            f"{medal} "
+            f"{analysis['skin']} "
+            f"- Score: {analysis['score']}/100"
+        )
 
-    db.cerrar()
+    print("\n" + "=" * 60)
+    print(" DETALLE ")
+    print("=" * 60)
+
+    for analysis in analyses[:3]:
+        ConsoleUI.show_analysis(analysis)
 
 
 if __name__ == "__main__":

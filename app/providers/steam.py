@@ -30,4 +30,30 @@ class SteamProvider:
 
         datos = respuesta.json()
 
-        return datos
+        if not datos.get("success"):
+            return datos
+
+        # Limpiar precio
+        precio = datos.get("lowest_price", "")
+        precio = precio.replace("$", "").replace(",", "")
+
+        try:
+            precio = float(precio)
+        except ValueError:
+            precio = None
+
+        # Limpiar volumen
+        volumen = datos.get("volume", "0")
+        volumen = volumen.replace(",", "")
+
+        try:
+            volumen = int(volumen)
+        except ValueError:
+            volumen = 0
+
+        return {
+            "success": True,
+            "price": precio,
+            "volume": volumen,
+            "median_price": datos.get("median_price")
+        }

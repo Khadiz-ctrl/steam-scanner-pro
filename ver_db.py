@@ -1,13 +1,12 @@
 import sqlite3
 
 conexion = sqlite3.connect("data/steam_scanner.db")
-
 cursor = conexion.cursor()
 
 cursor.execute("""
-SELECT skin, price, volume, created_at
+SELECT price, typeof(price)
 FROM prices
-ORDER BY id DESC
+LIMIT 10
 """)
 
 for fila in cursor.fetchall():
