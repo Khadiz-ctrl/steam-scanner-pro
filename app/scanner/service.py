@@ -2,6 +2,7 @@ import json
 
 from app.analysis.analyzer import Analyzer
 from app.ui.console import ConsoleUI
+from app.ui.dashboard import Dashboard
 
 
 class ScannerService:
@@ -29,11 +30,11 @@ class ScannerService:
 
     def show_results(self, analyses):
 
-        print("=" * 60)
-        print(" STEAM SCANNER PRO ")
-        print("=" * 60)
+        Dashboard.show(analyses)
 
-        print("\nTOP OPORTUNIDADES\n")
+        print("\n" + "=" * 60)
+        print(" TOP OPORTUNIDADES ")
+        print("=" * 60)
 
         medals = ["🥇", "🥈", "🥉"]
 
