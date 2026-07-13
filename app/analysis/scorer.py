@@ -1,3 +1,6 @@
+from app.config import Config
+
+
 class Scorer:
 
     @staticmethod
@@ -14,59 +17,57 @@ class Scorer:
 
         # Precio
         if difference <= -5:
-            score += 40
+            score += Config.PRICE_VERY_CHEAP
             reasons.append("Precio muy por debajo del promedio")
 
         elif difference <= -2:
-            score += 25
+            score += Config.PRICE_CHEAP
             reasons.append("Precio por debajo del promedio")
 
         elif difference <= 0:
-            score += 10
+            score += Config.PRICE_SLIGHTLY_CHEAP
             reasons.append("Precio ligeramente por debajo del promedio")
 
         # Volumen
         if volume >= 100:
-            score += 30
+            score += Config.HIGH_VOLUME
             reasons.append("Volumen alto")
 
         elif volume >= 50:
-            score += 20
+            score += Config.MEDIUM_VOLUME
             reasons.append("Buen volumen")
 
         else:
-            score += 10
+            score += Config.LOW_VOLUME
             reasons.append("Volumen bajo")
 
         # Historial
         if history_count >= 100:
-            score += 30
+            score += Config.LARGE_HISTORY
             reasons.append("Historial amplio")
 
         elif history_count >= 30:
-            score += 20
+            score += Config.MEDIUM_HISTORY
             reasons.append("Historial suficiente")
 
         else:
-            score += 10
+            score += Config.SMALL_HISTORY
             reasons.append("Historial corto")
 
         # Volatilidad
         if volatility <= 1:
-            score += 20
+            score += Config.LOW_VOLATILITY
             reasons.append("Baja volatilidad")
 
         elif volatility <= 3:
-            score += 10
+            score += Config.MEDIUM_VOLATILITY
             reasons.append("Volatilidad moderada")
 
         # Tendencia
         if trend == "DOWN":
             reasons.append("Tendencia bajista")
-
         elif trend == "UP":
             reasons.append("Tendencia alcista")
-
         else:
             reasons.append("Tendencia estable")
 
@@ -74,5 +75,3 @@ class Scorer:
             "score": score,
             "reasons": reasons
         }
-    
-

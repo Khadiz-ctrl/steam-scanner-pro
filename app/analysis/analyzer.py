@@ -1,5 +1,6 @@
 from app.analysis.scorer import Scorer
 from app.analysis.statistics import Statistics
+from app.analysis.recommendation import Recommendation
 from app.database.repository import PriceRepository
 
 
@@ -68,6 +69,9 @@ class Analyzer:
 
         analysis["score"] = score_data["score"]
         analysis["reasons"] = score_data["reasons"]
+        analysis["recommendation"] = Recommendation.get(
+            analysis["score"]
+        )
 
         return analysis
 
