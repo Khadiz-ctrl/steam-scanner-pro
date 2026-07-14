@@ -1,5 +1,5 @@
 from app.config import ScoringConfig
-
+from app.messages import Messages
 
 class Scorer:
 
@@ -24,15 +24,15 @@ class Scorer:
 
         if difference <= -5:
             points = ScoringConfig.PRICE_VERY_CHEAP
-            reasons.append("Precio muy por debajo del promedio")
+            reasons.append(Messages.PRICE_VERY_CHEAP)
 
         elif difference <= -2:
             points = ScoringConfig.PRICE_CHEAP
-            reasons.append("Precio por debajo del promedio")
+            reasons.append(Messages.PRICE_CHEAP)
 
         elif difference <= 0:
             points = ScoringConfig.PRICE_SLIGHTLY_CHEAP
-            reasons.append("Precio ligeramente por debajo del promedio")
+            reasons.append(Messages.PRICE_SLIGHTLY_CHEAP)
 
         score += points
         debug["Precio"] = points
