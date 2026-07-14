@@ -10,3 +10,25 @@ __pycache__/
 
 # Configuración de VS Code
 .vscode/
+
+# Virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+scanner.log
+
+# SQLite temporales
+*.db-wal
+*.db-shm
+
+# Sistema
+.DS_Store
+Thumbs.db

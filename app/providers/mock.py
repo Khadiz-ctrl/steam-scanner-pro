@@ -1,7 +1,9 @@
 import random
 
+from app.providers.base import PriceProvider
 
-class MockProvider:
+
+class MockProvider(PriceProvider):
 
     def obtener_precio(self, skin):
 
@@ -19,11 +21,9 @@ class MockProvider:
             )
         )
 
-        # Variación aleatoria entre -2% y +2%
         variacion = random.uniform(-2, 2)
-        porcentaje = variacion / 100
 
-        precio = round(precio * (1 + porcentaje), 2)
+        precio = round(precio * (1 + variacion / 100), 2)
 
         return {
             "success": True,

@@ -5,9 +5,9 @@ from app.utils.logger import Logger
 
 class ScannerEngine:
 
-    def __init__(self):
+    def __init__(self, provider=None):
 
-        self.provider = MockProvider()
+        self.provider = provider or MockProvider()
         self.database = Database()
 
     def scan(self, watchlist):
