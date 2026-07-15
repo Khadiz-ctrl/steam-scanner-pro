@@ -2,9 +2,10 @@ import json
 
 from app.analysis.analyzer import Analyzer
 from app.analysis.filter import AnalysisFilter
+from app.reports.csv_exporter import CSVExporter
 from app.scanner.engine import ScannerEngine
-from app.ui.console import ConsoleUI
 from app.ui.dashboard import Dashboard
+from app.ui.rich_console import ConsoleUI
 
 
 class ScannerService:
@@ -13,6 +14,10 @@ class ScannerService:
 
         self.engine = ScannerEngine()
         self.analyzer = Analyzer()
+
+    # ---------------------------------------------------------
+    # Watchlist
+    # ---------------------------------------------------------
 
     def load_watchlist(self):
 
@@ -23,6 +28,10 @@ class ScannerService:
         ) as file:
 
             return json.load(file)
+
+    # ---------------------------------------------------------
+    # Analysis
+    # ---------------------------------------------------------
 
     def analyze(self):
 
@@ -41,6 +50,10 @@ class ScannerService:
 
         return analyses
 
+    # ---------------------------------------------------------
+    # UI
+    # ---------------------------------------------------------
+
     def show_results(self, analyses):
 
         Dashboard.show(analyses)
@@ -51,14 +64,30 @@ class ScannerService:
 
         if not opportunities:
 
-            print("\nNo hay oportunidades.\n")
+            ConsoleUI.print_warning(
+                "No hay oportunidades."
+            )
             return
 
         for analysis in opportunities[:3]:
             ConsoleUI.show_analysis(analysis)
+
+    # ---------------------------------------------------------
+    # Reports
+    # ---------------------------------------------------------
+
+    def export_reports(self, analyses):
+
+        CSVExporter.export(analyses)
+
+    # ---------------------------------------------------------
+    # Entry Point
+    # ---------------------------------------------------------
 
     def run(self):
 
         analyses = self.analyze()
 
         self.show_results(analyses)
+
+        self.export_reports(analyses)

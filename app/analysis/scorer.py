@@ -1,4 +1,5 @@
 from app.config.scoring import ScoringConfig
+from app.messages import Messages
 
 
 class Scorer:
@@ -10,105 +11,188 @@ class Scorer:
         reasons = []
         debug = {}
 
-        difference = analysis["difference_percent"]
-        volume = analysis["volume"]
-        history_count = len(analysis["history"])
-        volatility = analysis["volatility"]
-        trend = analysis["trend"]
-
-        # -----------------------
+        # --------------------------
         # Precio
-        # -----------------------
+        # --------------------------
 
-        points = 0
-
-        if difference <= -5:
-            points = ScoringConfig.PRICE_VERY_CHEAP
-            reasons.append("Precio muy por debajo del promedio")
-
-        elif difference <= -2:
-            points = ScoringConfig.PRICE_CHEAP
-            reasons.append("Precio por debajo del promedio")
-
-        elif difference <= 0:
-            points = ScoringConfig.PRICE_SLIGHTLY_CHEAP
-            reasons.append("Precio ligeramente por debajo del promedio")
+        points, reason = Scorer._score_price(
+            analysis.difference_percent
+        )
 
         score += points
         debug["Precio"] = points
 
-        # -----------------------
+        if reason:
+            reasons.append(reason)
+
+        # --------------------------
         # Volumen
-        # -----------------------
+        # --------------------------
 
-        points = 0
-
-        if volume >= 100:
-            points = ScoringConfig.HIGH_VOLUME
-            reasons.append("Volumen alto")
-
-        elif volume >= 50:
-            points = ScoringConfig.MEDIUM_VOLUME
-            reasons.append("Buen volumen")
-
-        else:
-            points = ScoringConfig.LOW_VOLUME
-            reasons.append("Volumen bajo")
+        points, reason = Scorer._score_volume(
+            analysis.volume
+        )
 
         score += points
         debug["Volumen"] = points
 
-        # -----------------------
+        if reason:
+            reasons.append(reason)
+
+        # --------------------------
         # Historial
-        # -----------------------
+        # --------------------------
 
-        points = 0
-
-        if history_count >= 100:
-            points = ScoringConfig.LARGE_HISTORY
-            reasons.append("Historial amplio")
-
-        elif history_count >= 30:
-            points = ScoringConfig.MEDIUM_HISTORY
-            reasons.append("Historial suficiente")
-
-        else:
-            points = ScoringConfig.SMALL_HISTORY
-            reasons.append("Historial corto")
+        points, reason = Scorer._score_history(
+            len(analysis.history)
+        )
 
         score += points
         debug["Historial"] = points
 
-        # -----------------------
+        if reason:
+            reasons.append(reason)
+
+        # --------------------------
         # Volatilidad
-        # -----------------------
+        # --------------------------
 
-        points = 0
-
-        if volatility <= 1:
-            points = ScoringConfig.LOW_VOLATILITY
-            reasons.append("Baja volatilidad")
-
-        elif volatility <= 3:
-            points = ScoringConfig.MEDIUM_VOLATILITY
-            reasons.append("Volatilidad moderada")
+        points, reason = Scorer._score_volatility(
+            analysis.volatility
+        )
 
         score += points
         debug["Volatilidad"] = points
 
-        if trend == "DOWN":
-            reasons.append("Tendencia bajista")
+        if reason:
+            reasons.append(reason)
 
-        elif trend == "UP":
-            reasons.append("Tendencia alcista")
+        # --------------------------
+        # Tendencia
+        # --------------------------
 
-        else:
-            reasons.append("Tendencia estable")
+        trend_reason = Scorer._trend_reason(
+            analysis.trend
+        )
+
+        if trend_reason:
+            reasons.append(trend_reason)
 
         debug["TOTAL"] = score
 
         return {
             "score": score,
             "reasons": reasons,
-            "debug": debug
+            "debug": debug,
         }
+
+    # ----------------------------------------------------------
+    # Price
+    # ----------------------------------------------------------
+
+    @staticmethod
+    def _score_price(difference):
+
+        if difference <= -5:
+            return (
+                ScoringConfig.PRICE_VERY_CHEAP,
+                Messages.PRICE_VERY_CHEAP,
+            )
+
+        if difference <= -2:
+            return (
+                ScoringConfig.PRICE_CHEAP,
+                Messages.PRICE_CHEAP,
+            )
+
+        if difference <= 0:
+            return (
+                ScoringConfig.PRICE_SLIGHTLY_CHEAP,
+                Messages.PRICE_SLIGHTLY_CHEAP,
+            )
+
+        return 0, None
+
+    # ----------------------------------------------------------
+    # Volume
+    # ----------------------------------------------------------
+
+    @staticmethod
+    def _score_volume(volume):
+
+        if volume >= 100:
+            return (
+                ScoringConfig.HIGH_VOLUME,
+                Messages.HIGH_VOLUME,
+            )
+
+        if volume >= 50:
+            return (
+                ScoringConfig.MEDIUM_VOLUME,
+                Messages.MEDIUM_VOLUME,
+            )
+
+        return (
+            ScoringConfig.LOW_VOLUME,
+            Messages.LOW_VOLUME,
+        )
+
+    # ----------------------------------------------------------
+    # History
+    # ----------------------------------------------------------
+
+    @staticmethod
+    def _score_history(history_count):
+
+        if history_count >= 100:
+            return (
+                ScoringConfig.LARGE_HISTORY,
+                Messages.LARGE_HISTORY,
+            )
+
+        if history_count >= 30:
+            return (
+                ScoringConfig.MEDIUM_HISTORY,
+                Messages.MEDIUM_HISTORY,
+            )
+
+        return (
+            ScoringConfig.SMALL_HISTORY,
+            Messages.SMALL_HISTORY,
+        )
+
+    # ----------------------------------------------------------
+    # Volatility
+    # ----------------------------------------------------------
+
+    @staticmethod
+    def _score_volatility(volatility):
+
+        if volatility <= 1:
+            return (
+                ScoringConfig.LOW_VOLATILITY,
+                Messages.LOW_VOLATILITY,
+            )
+
+        if volatility <= 3:
+            return (
+                ScoringConfig.MEDIUM_VOLATILITY,
+                Messages.MEDIUM_VOLATILITY,
+            )
+
+        return 0, None
+
+    # ----------------------------------------------------------
+    # Trend
+    # ----------------------------------------------------------
+
+    @staticmethod
+    def _trend_reason(trend):
+
+        if trend == "DOWN":
+            return Messages.TREND_DOWN
+
+        if trend == "UP":
+            return Messages.TREND_UP
+
+        return Messages.TREND_STABLE

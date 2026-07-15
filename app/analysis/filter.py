@@ -6,5 +6,5 @@ class AnalysisFilter:
         return [
             analysis
             for analysis in analyses
-            if analysis["recommendation"] != "SKIP"
+            if analysis.recommendation != "SKIP"
         ]
