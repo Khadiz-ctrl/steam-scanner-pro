@@ -2,8 +2,9 @@ import json
 
 from app.analysis.analyzer import Analyzer
 from app.analysis.filter import AnalysisFilter
+from app.reports.csv_exporter import CSVExporter
 from app.scanner.engine import ScannerEngine
-from app.ui.console import ConsoleUI
+from app.ui.rich_console import ConsoleUI
 from app.ui.dashboard import Dashboard
 
 
@@ -13,6 +14,10 @@ class ScannerService:
 
         self.engine = ScannerEngine()
         self.analyzer = Analyzer()
+
+    # ---------------------------------------------------------
+    # Watchlist
+    # ---------------------------------------------------------
 
     def load_watchlist(self):
 
@@ -24,11 +29,14 @@ class ScannerService:
 
             return json.load(file)
 
+    # ---------------------------------------------------------
+    # Analysis
+    # ---------------------------------------------------------
+
     def analyze(self):
 
         watchlist = self.load_watchlist()
 
-        # NUEVO
         self.engine.scan(watchlist)
 
         analyses = self.analyzer.analyze_watchlist(
@@ -36,11 +44,15 @@ class ScannerService:
         )
 
         analyses.sort(
-            key=lambda analysis: analysis["score"],
-            reverse=True
-        )
+          key=lambda analysis: analysis.score,
+          reverse=True
+)
 
         return analyses
+
+    # ---------------------------------------------------------
+    # UI
+    # ---------------------------------------------------------
 
     def show_results(self, analyses):
 
@@ -49,29 +61,12 @@ class ScannerService:
         opportunities = AnalysisFilter.opportunities(
             analyses
         )
-
-        print("\n" + "=" * 60)
-        print(" TOP OPORTUNIDADES ")
-        print("=" * 60)
-
         if not opportunities:
 
             print("\nNo hay oportunidades.\n")
-
             return
 
         medals = ["🥇", "🥈", "🥉"]
-
-        for index, analysis in enumerate(opportunities):
-
-            medal = medals[index] if index < 3 else "⭐"
-
-            print(
-                f"{medal} "
-                f"{analysis['skin']} "
-                f"- {analysis['recommendation']} "
-                f"- Score: {analysis['score']}/100"
-            )
 
         print("\n" + "=" * 60)
         print(" DETALLE ")
@@ -80,8 +75,22 @@ class ScannerService:
         for analysis in opportunities[:3]:
             ConsoleUI.show_analysis(analysis)
 
+    # ---------------------------------------------------------
+    # Reports
+    # ---------------------------------------------------------
+
+    def export_reports(self, analyses):
+
+        CSVExporter.export(analyses)
+
+    # ---------------------------------------------------------
+    # Entry Point
+    # ---------------------------------------------------------
+
     def run(self):
 
         analyses = self.analyze()
 
         self.show_results(analyses)
+
+        self.export_reports(analyses)

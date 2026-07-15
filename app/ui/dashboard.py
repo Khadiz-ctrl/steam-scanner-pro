@@ -1,17 +1,10 @@
+from rich.panel import Panel
+from rich.table import Table
+
+from app.ui.theme import console
+
+
 class Dashboard:
-
-    WIDTH = 60
-
-    @staticmethod
-    def line():
-        print("═" * Dashboard.WIDTH)
-
-    @staticmethod
-    def title(text):
-
-        Dashboard.line()
-        print(text.center(Dashboard.WIDTH))
-        Dashboard.line()
 
     @staticmethod
     def show(analyses):
@@ -19,40 +12,67 @@ class Dashboard:
         buy = sum(
             1
             for analysis in analyses
-            if analysis["recommendation"] == "BUY"
+            if analysis.recommendation == "BUY"
         )
 
         watch = sum(
             1
             for analysis in analyses
-            if analysis["recommendation"] == "WATCH"
+            if analysis.recommendation == "WATCH"
         )
 
         skip = sum(
             1
             for analysis in analyses
-            if analysis["recommendation"] == "SKIP"
+            if analysis.recommendation == "SKIP"
         )
 
         best = analyses[0]
 
-        Dashboard.title("STEAM SCANNER PRO")
+        console.print()
 
-        print()
+        console.print(
+            Panel.fit(
+                (
+                    f"[bold cyan]Steam Scanner Pro[/bold cyan]\n\n"
+                    f"🟢 BUY      : {buy}\n"
+                    f"🟡 WATCH    : {watch}\n"
+                    f"🔴 SKIP     : {skip}\n\n"
+                    f"🏆 Mejor oportunidad\n"
+                    f"{best.skin}\n"
+                    f"⭐ Score: {best.score}"
+                ),
+                title="Dashboard",
+            )
+        )
 
-        print("📊 RESUMEN")
-        print("-" * Dashboard.WIDTH)
+        table = Table(title="Top Opportunities")
 
-        print(f"Skins analizadas : {len(analyses)}")
-        print(f"BUY              : {buy}")
-        print(f"WATCH            : {watch}")
-        print(f"SKIP             : {skip}")
+        table.add_column("#", justify="center", width=4)
+        table.add_column("Skin")
+        table.add_column("Score", justify="right")
+        table.add_column("Action", justify="center")
 
-        print()
+        medals = ["🥇", "🥈", "🥉"]
 
-        print("🏆 MEJOR OPORTUNIDAD")
-        print("-" * Dashboard.WIDTH)
+        for index, analysis in enumerate(analyses[:5]):
 
-        print(best["skin"])
-        print(f"Score          : ⭐ {best['score']}")
-        print(f"Recomendación  : {best['recommendation']}")
+            medal = medals[index] if index < 3 else "⭐"
+
+            if analysis.recommendation == "BUY":
+                action = "🟢 BUY"
+
+            elif analysis.recommendation == "WATCH":
+                action = "🟡 WATCH"
+
+            else:
+                action = "🔴 SKIP"
+
+            table.add_row(
+                medal,
+                analysis.skin,
+                f"⭐ {analysis.score}",
+                action,
+            )
+
+        console.print(table)
