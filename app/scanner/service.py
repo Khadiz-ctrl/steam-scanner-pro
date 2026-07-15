@@ -19,7 +19,7 @@ class ScannerService:
         with open(
             "data/watchlist.json",
             "r",
-            encoding="utf-8"
+            encoding="utf-8",
         ) as file:
 
             return json.load(file)
@@ -28,7 +28,6 @@ class ScannerService:
 
         watchlist = self.load_watchlist()
 
-        # NUEVO
         self.engine.scan(watchlist)
 
         analyses = self.analyzer.analyze_watchlist(
@@ -36,8 +35,8 @@ class ScannerService:
         )
 
         analyses.sort(
-            key=lambda analysis: analysis["score"],
-            reverse=True
+            key=lambda analysis: analysis.score,
+            reverse=True,
         )
 
         return analyses
@@ -50,32 +49,10 @@ class ScannerService:
             analyses
         )
 
-        print("\n" + "=" * 60)
-        print(" TOP OPORTUNIDADES ")
-        print("=" * 60)
-
         if not opportunities:
 
             print("\nNo hay oportunidades.\n")
-
             return
-
-        medals = ["🥇", "🥈", "🥉"]
-
-        for index, analysis in enumerate(opportunities):
-
-            medal = medals[index] if index < 3 else "⭐"
-
-            print(
-                f"{medal} "
-                f"{analysis['skin']} "
-                f"- {analysis['recommendation']} "
-                f"- Score: {analysis['score']}/100"
-            )
-
-        print("\n" + "=" * 60)
-        print(" DETALLE ")
-        print("=" * 60)
 
         for analysis in opportunities[:3]:
             ConsoleUI.show_analysis(analysis)
