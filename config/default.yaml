@@ -1,0 +1,62 @@
+# ==========================================================
+# Steam Scanner Pro Configuration
+# ==========================================================
+
+scoring:
+
+  # --------------------------------------------------------
+  # Points awarded by the scoring system
+  # --------------------------------------------------------
+
+  price:
+    very_cheap: 40
+    cheap: 25
+    slightly_cheap: 10
+
+  volume:
+    high: 30
+    medium: 20
+    low: 10
+
+  history:
+    large: 30
+    medium: 20
+    small: 10
+
+  volatility:
+    low: 20
+    medium: 10
+    high: 0
+
+# ----------------------------------------------------------
+# Recommendation thresholds
+# (Todavía no se usan, pero los vamos a implementar)
+# ----------------------------------------------------------
+
+recommendation:
+  buy: 80
+  watch: 50
+  skip: 0
+
+# ----------------------------------------------------------
+# Scanner
+# ----------------------------------------------------------
+
+scanner:
+  refresh_seconds: 60
+
+# ----------------------------------------------------------
+# Reports
+# ----------------------------------------------------------
+
+reports:
+  output_folder: reports
+
+# ----------------------------------------------------------
+# Logging
+# (Para futuros sprints)
+# ----------------------------------------------------------
+
+logging:
+  level: INFO
+  file: logs/steam_scanner.log
