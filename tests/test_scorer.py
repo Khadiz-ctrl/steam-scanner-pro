@@ -1,4 +1,5 @@
 from app.analysis.scorer import Scorer
+from app.domain.skin_analysis import SkinAnalysis
 
 
 def make_analysis(
@@ -6,15 +7,24 @@ def make_analysis(
     volume=50,
     history=30,
     volatility=2,
-    trend="STABLE"
+    trend="STABLE",
 ):
-    return {
-        "difference_percent": difference,
-        "volume": volume,
-        "history": [None] * history,
-        "volatility": volatility,
-        "trend": trend,
-    }
+
+    analysis = SkinAnalysis(
+        skin="Test Skin",
+        current_price=100,
+        average_price=100,
+        moving_average=100,
+        target_price=95,
+        difference_percent=difference,
+        volume=volume,
+        trend=trend,
+        volatility=volatility,
+        history=[None] * history,
+        priority=1,
+    )
+
+    return analysis
 
 
 # -----------------------------
