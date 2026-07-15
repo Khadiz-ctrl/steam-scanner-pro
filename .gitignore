@@ -32,3 +32,5 @@ scanner.log
 # Sistema
 .DS_Store
 Thumbs.db
+
+reports/*.csv
