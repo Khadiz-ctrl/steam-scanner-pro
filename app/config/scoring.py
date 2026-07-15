@@ -9,8 +9,9 @@ class ScoringConfig:
     # Recommendation thresholds
     # --------------------------------------------------
 
-    BUY_THRESHOLD = 80
-    WATCH_THRESHOLD = 50
+    BUY_THRESHOLD = _settings.scoring.recommendation.buy
+    WATCH_THRESHOLD = _settings.scoring.recommendation.watch
+    SKIP_THRESHOLD = _settings.scoring.recommendation.skip
 
     # --------------------------------------------------
     # Price

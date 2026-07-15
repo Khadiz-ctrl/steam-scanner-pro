@@ -5,6 +5,7 @@ import yaml
 from app.config.settings import (
     HistoryConfig,
     PriceConfig,
+    RecommendationConfig,
     ReportsSettings,
     ScannerSettings,
     ScoringSettings,
@@ -32,6 +33,9 @@ class ConfigLoader:
                 volume=VolumeConfig(**scoring["volume"]),
                 history=HistoryConfig(**scoring["history"]),
                 volatility=VolatilityConfig(**scoring["volatility"]),
+                recommendation=RecommendationConfig(
+                    **data["recommendation"]
+                ),
             ),
             scanner=ScannerSettings(**data["scanner"]),
             reports=ReportsSettings(**data["reports"]),

@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 
 
+# --------------------------------------------------
+# Scoring
+# --------------------------------------------------
+
 @dataclass(slots=True)
 class PriceConfig:
     very_cheap: int
@@ -30,22 +34,42 @@ class VolatilityConfig:
 
 
 @dataclass(slots=True)
+class RecommendationConfig:
+    buy: int
+    watch: int
+    skip: int
+
+
+@dataclass(slots=True)
 class ScoringSettings:
     price: PriceConfig
     volume: VolumeConfig
     history: HistoryConfig
     volatility: VolatilityConfig
+    recommendation: RecommendationConfig
 
+
+# --------------------------------------------------
+# Scanner
+# --------------------------------------------------
 
 @dataclass(slots=True)
 class ScannerSettings:
     refresh_seconds: int
 
 
+# --------------------------------------------------
+# Reports
+# --------------------------------------------------
+
 @dataclass(slots=True)
 class ReportsSettings:
     output_folder: str
 
+
+# --------------------------------------------------
+# Root
+# --------------------------------------------------
 
 @dataclass(slots=True)
 class Settings:
